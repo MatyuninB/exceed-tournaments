@@ -7,12 +7,11 @@ const tournamentSchema = new Schema(
     date: {type: Date, default: Date.now },
     users: [
       {
-        username: String,
-        image: {type: String, default:"https://www.meme-arsenal.com/memes/977d4bb950b8c9d8917a7da11808a63b.jpg"},
+        userId: String,
         score: {type: String, default:"-"},
-        place: String,
         gitURL: String,
-        office: String,
+        difficulty: String,
+        jobStatus: String,
       }
     ],
     place: String,
