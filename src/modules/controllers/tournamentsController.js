@@ -55,3 +55,16 @@ module.exports.newTournament = (req, res) => {
     console.log(err);
   });
 }
+
+module.exports.tornamentUserControl = async(req, res) => {
+  const { publicID, _id } = req.body;
+  let tmp = [];
+
+  await Tournaments.findOne({publicID})
+  .then((result) => {
+    tmp = [...result.users];
+  }).catch(err => res.status(401).send('no tournament'));
+
+  _id.forEach((e, i) => { if(!tmp.findIndex(elem => elem.userId = e)) tmp.push({userId: e})});
+  Tournaments.updateOne({publicID}, {users: tmp}).then(() => res.sendStatus(200)).catch(err => res.status(401).send(err));
+}
