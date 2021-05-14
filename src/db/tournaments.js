@@ -19,7 +19,7 @@ const tournamentSchema = new Schema(
       date: {type: Date, default: Date.now },
       title: String,
       about: String,
-      rules: String,
+      rules: Array,
       benchmarks: String,
     }
   }
