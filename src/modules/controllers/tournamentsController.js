@@ -17,24 +17,26 @@ module.exports.getOneTournament = async(req, res) => {
   let userInfo = [];
 
   await Tournaments.findOne({ publicID })
-  .then(result => tournament = result)
+  .then(result => result? tournament = result : res.sendStatus(404))
   .catch(err => {
     console.log(err);
-    res.send(err);
+    res.sendStatus(404);
   });
 
 
-  for (let item of tournament.users) {
-    let tmp = {};
-    await Users.find({ _id: item.userId})
-    .then(result => {
-      const {username, image, office} = result[0];
-      const {score, difficulty, jobStatus, gitURL, _id} = item;
-      item = {username, image, office, score, difficulty, jobStatus, gitURL, _id};
-      userInfo.push(item);
-    })
-    .catch(err => console.log(err));
-  };
+  if (tournament.users) {
+    for (let item of tournament.users) {
+      let tmp = {};
+      await Users.find({ _id: item.userId})
+      .then(result => {
+        const {username, image, office} = result[0];
+        const {score, difficulty, jobStatus, gitURL, _id} = item;
+        item = {username, image, office, score, difficulty, jobStatus, gitURL, _id};
+        userInfo.push(item);
+      })
+      .catch(err => console.log(err));
+    };
+  }
   
   let copy = Object.assign({}, tournament._doc);
   copy.users = userInfo;
@@ -42,14 +44,14 @@ module.exports.getOneTournament = async(req, res) => {
 }
 
 module.exports.newTournament = (req, res) => {
-  const tournament = { publicID, title, description, date, users, place, status } = req.body;
+  const tournament = req.body;
 
   const newTournament = new Tournaments(tournament);
   newTournament
   .save()
-  .then(() => res.send(`${title} created!`))
+  .then(() => res.sendStatus(500).send(`${title} created!`))
   .catch(err => {
-    res.send(err);
+    res.sendStatus(400);
     console.log(err);
   });
 }
