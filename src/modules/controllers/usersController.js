@@ -1,7 +1,9 @@
 const Users = require('../../db/users');
 const bcrypt = require('bcrypt');
 const generateToken = require('../auth/generateToken');
-const saltRounds = 10;
+const { response } = require('express');
+const saltRounds = process.env.SALT;
+
 
 module.exports.newUser = async(req, res) => {
   const {
@@ -9,7 +11,8 @@ module.exports.newUser = async(req, res) => {
     username,  
     tornaments, 
     image, 
-    office
+    office,
+    fullname,
   } = req.body;
   const user = {
     username,  
@@ -36,7 +39,7 @@ module.exports.newUser = async(req, res) => {
 }
 
 module.exports.userLogin = (req, res) => {
-  const {password, username} = req.body;
+  const { password, username } = req.body;
 
   Users.findOne({username})
   .then(result => {
@@ -51,4 +54,27 @@ module.exports.userLogin = (req, res) => {
     });
   })
   .catch(err => res.status(404).send("User not found!"));
+}
+
+module.exports.userUpdate = (req, res) => {
+  const { _id } = req.user;
+  const { image, office, fullname } = req.body
+  
+  Users
+  .updateOne({ _id }, {office, fullname})
+  .then(() => res.sendStatus(202))
+  .catch(err => {
+    console.log(err);
+    res.sendStatus(404);
+  });
+}
+
+module.exports.imageHandler = async(req, res) => {
+  const { _id } = req.user
+  const path = Object.values(req.files)[0].path;
+  cloudinary.v2.uploader.upload(path, { public_id: `exceed${_id}` })
+  .then(result => Users.updateOne( {_id}, { image: result.url })
+  .then(() => res.sendStatus(200))
+  .catch(err => res.status(404).send(err)))
+  .catch(err => res.status(404).send(err));
 }
