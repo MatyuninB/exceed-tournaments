@@ -15,7 +15,12 @@ const tournamentSchema = new Schema(
       }
     ],
     place: String,
-    status: {type: Boolean, default: true}
+    status: {type: Boolean, default: true},
+    description: {
+      about: String,
+      rules: String,
+      benchmarks: String,
+    }
   }
 );
 

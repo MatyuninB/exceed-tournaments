@@ -42,7 +42,7 @@ module.exports.getOneTournament = async(req, res) => {
 }
 
 module.exports.newTournament = (req, res) => {
-  const tournament = {title, date, users, place, status} = req.body;
+  const tournament = { title, description, date, users, place, status } = req.body;
 
   const newTournament = new Tournaments(tournament);
   newTournament
