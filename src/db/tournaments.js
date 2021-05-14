@@ -20,7 +20,7 @@ const tournamentSchema = new Schema(
       title: String,
       about: String,
       rules: Array,
-      benchmarks: String,
+      benchmarks: Array,
     }
   }
 );
