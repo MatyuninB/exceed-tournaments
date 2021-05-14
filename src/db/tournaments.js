@@ -21,6 +21,7 @@ const tournamentSchema = new Schema(
       about: String,
       rules: Array,
       benchmarks: Array,
+      video: String,
     }
   }
 );
