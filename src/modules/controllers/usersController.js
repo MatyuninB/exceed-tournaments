@@ -1,8 +1,8 @@
 const Users = require('../../db/users');
 const bcrypt = require('bcrypt');
 const generateToken = require('../auth/generateToken');
-const { response } = require('express');
-const saltRounds = process.env.SALT;
+const dotenv = require('dotenv').config();
+const saltRounds = 10;
 
 
 module.exports.newUser = async(req, res) => {
@@ -22,16 +22,22 @@ module.exports.newUser = async(req, res) => {
   }
 
   if (/(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,}/.test(password)) {
+    console.log(saltRounds)
     bcrypt.hash(password, saltRounds, (err, hash) => {
-      user.password = hash;
-
-      const newUser = new Users(user);
-      newUser.save()
-      .then(() => res.sendStatus(201))
-      .catch(err => {
+      if(err) {
         console.log(err);
-        res.send(err._message);
-      });
+      } else {
+        user.password = hash;
+        console.log(user.password);
+
+        const newUser = new Users(user);
+        newUser.save()
+        .then(() => res.sendStatus(201))
+        .catch(err => {
+          console.log(err);
+          res.send(err._message);
+        });
+      }
     });
   } else {
     res.status(400).send('ERR: password break the rules');
