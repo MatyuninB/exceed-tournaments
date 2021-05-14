@@ -12,11 +12,11 @@ module.exports.getAllTournaments = (req, res) => {
 }
 
 module.exports.getOneTournament = async(req, res) => {
-  const {_id} = req.query;
+  const { publicID } = req.query;
   let tournament = {};
   let userInfo = [];
 
-  await Tournaments.findOne({ _id })
+  await Tournaments.findOne({ publicID })
   .then(result => tournament = result)
   .catch(err => {
     console.log(err);
@@ -42,7 +42,7 @@ module.exports.getOneTournament = async(req, res) => {
 }
 
 module.exports.newTournament = (req, res) => {
-  const tournament = { title, description, date, users, place, status } = req.body;
+  const tournament = { publicID, title, description, date, users, place, status } = req.body;
 
   const newTournament = new Tournaments(tournament);
   newTournament
