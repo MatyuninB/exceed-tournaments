@@ -4,8 +4,6 @@ const { Schema } = mongoose;
 const tournamentSchema = new Schema(
   {
     publicID: {type: String, required: true, unique: true},
-    title: String,
-    date: {type: Date, default: Date.now },
     users: [
       {
         userId: String,
@@ -18,6 +16,8 @@ const tournamentSchema = new Schema(
     place: String,
     status: {type: Boolean, default: true},
     description: {
+      date: {type: Date, default: Date.now },
+      title: String,
       about: String,
       rules: String,
       benchmarks: String,
