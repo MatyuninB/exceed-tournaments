@@ -5,7 +5,7 @@ const Users = require('../../db/users');
 module.exports.getAllTournaments = (req, res) => {
   Tournaments
   .find()
-  .then(result => res.send(result.map(e => e.publicID)))
+  .then(result => res.send(result.map(e => {return {title: e.description.title, publicID : e.publicID}})))
   .catch(err => {
     res.send('database not avalible ' + err);
     console.log(err);
@@ -71,7 +71,7 @@ module.exports.tornamentUserControl = async(req, res) => {
 }
 
 module.exports.tornamentAddScore = async(req, res) => {
-  const { _id, publicID } = req.query;
+  const { id, publicID } = req.query;
   const { score, comment } = req.body;
   let users;
   if (req.user.role === 'Juri') {
@@ -84,14 +84,14 @@ module.exports.tornamentAddScore = async(req, res) => {
     res.sendStatus(403);
   }
 
-  let index = users.findIndex(e => e._id == _id);
+  let index = users.findIndex(e => e.userId == id);
   if (index > -1) {
     let {username, image} = req.user;
     user = Object.assign({},users[index]._doc);
     user.marks.push({name: username, image, score, comment});
     delete user._id;
 
-    await Tournaments.updateOne({publicID ,'users._id': _id}, {$set: {'users.$': user}})
+    await Tournaments.updateOne({publicID ,'users.userId': id}, {$set: {'users.$': user}})
     .then(() => res.sendStatus(200))
     .catch(err => console.log(err));
   } else {
@@ -102,14 +102,16 @@ module.exports.tornamentAddScore = async(req, res) => {
 
   await Tournaments.findOne({publicID})
   .then(result => {
-    let index = users.findIndex(e => e._id == _id);
+    let index = users.findIndex(e => e.userId == id);
     if (index > -1) {
       let marks = result.users[index].marks;
-      console.log('totel ' + marks.reduce((acc, e) => acc += e.score));
-      let score = (marks.reduce((acc, e) => acc += e.score)) /result.users[index].marks.length;
+      let total = 0;
+      marks.forEach((e) => total += parseInt(e.score));
+      console.log(total);
+      let score = (total/marks.length).toFixed(2);
 
-      Tournaments.updateOne({publicID, 'users._id': _id}, {$set: {'users.$.score': score}})
-      .then(result => console.log(result))
+      Tournaments.updateOne({publicID, 'users.userId': id}, {$set: {'users.$.score': score.toString()}})
+      .then(result => sendStatus(200))
       .catch(err => console.log(err));
     }
   });
