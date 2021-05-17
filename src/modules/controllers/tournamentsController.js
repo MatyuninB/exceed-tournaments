@@ -1,3 +1,4 @@
+const { response } = require('express');
 const Tournaments = require('../../db/tournaments');
 const Users = require('../../db/users');
 
@@ -49,7 +50,7 @@ module.exports.newTournament = (req, res) => {
   const newTournament = new Tournaments(tournament);
   newTournament
   .save()
-  .then(() => res.sendStatus(500).send(`${title} created!`))
+  .then(() => res.sendStatus(200).send(`${title} created!`))
   .catch(err => {
     res.sendStatus(400);
     console.log(err);
@@ -65,6 +66,20 @@ module.exports.tornamentUserControl = async(req, res) => {
     tmp = [...result.users];
   }).catch(err => res.status(401).send('no tournament'));
 
-  _id.forEach((e, i) => { if(!tmp.findIndex(elem => elem.userId = e)) tmp.push({userId: e})});
+  _id.forEach((e, i) => { if(tmp.findIndex(elem => elem.userId === e) === -1) tmp.push({userId: e})});
   Tournaments.updateOne({publicID}, {users: tmp}).then(() => res.sendStatus(200)).catch(err => res.status(401).send(err));
+}
+
+module.exports.tornamentAddScore = (req, res) => {
+  const { _id, publicID } = req.query;
+  console.log(_id)
+  if (req.user.role === 'Juri') {
+    Tournaments.find({ publicID })
+    .then(responce => {
+      if(response.users) return response.users.findIndex(e => e._id === id)
+    })
+    .then(result => console.log(result))
+  } else {
+    res.sendStatus(403);
+  }
 }

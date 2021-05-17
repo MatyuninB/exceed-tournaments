@@ -75,6 +75,12 @@ module.exports.userUpdate = (req, res) => {
   });
 }
 
+module.exports.userInfo = (req, res) => {
+  const user = Object.assign({}, req.user);
+  delete user._doc.password;
+  res.send(user._doc);
+}
+
 module.exports.imageHandler = async(req, res) => {
   const { _id } = req.user
   const path = Object.values(req.files)[0].path;

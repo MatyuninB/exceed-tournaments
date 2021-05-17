@@ -6,8 +6,9 @@ const tournamentSchema = new Schema(
     publicID: {type: String, required: true, unique: true},
     users: [
       {
-        userId: String,
+        userId: {type:String, unique: true},
         score: {type: String, default:"-"},
+        
         gitURL: String,
         difficulty: String,
         jobStatus: String,
