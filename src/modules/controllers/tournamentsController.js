@@ -31,8 +31,8 @@ module.exports.getOneTournament = async(req, res) => {
       await Users.find({ _id: item.userId})
       .then(result => {
         const {username, image, fullname, office} = result[0];
-        const {score, difficulty, jobStatus, gitURL, _id, marks} = item;
-        item = {username, fullname, image, office, score, difficulty, jobStatus, gitURL, _id, marks};
+        const {score, difficulty, jobStatus, gitURL, _id, marks, userId} = item;
+        item = {username, fullname, image, office, score, difficulty, userId, jobStatus, gitURL, _id, marks};
         userInfo.push(item);
       })
       .catch(err => console.log(err));
