@@ -5,7 +5,7 @@ const Users = require('../../db/users');
 module.exports.getAllTournaments = (req, res) => {
   Tournaments
   .find()
-  .then(result => res.send(result))
+  .then(result => res.send(result.map(e => e.publicID)))
   .catch(err => {
     res.send('database not avalible ' + err);
     console.log(err);
@@ -31,8 +31,8 @@ module.exports.getOneTournament = async(req, res) => {
       await Users.find({ _id: item.userId})
       .then(result => {
         const {username, image, office} = result[0];
-        const {score, difficulty, jobStatus, gitURL, _id} = item;
-        item = {username, image, office, score, difficulty, jobStatus, gitURL, _id};
+        const {score, difficulty, jobStatus, gitURL, _id, marks} = item;
+        item = {username, image, office, score, difficulty, jobStatus, gitURL, _id, marks};
         userInfo.push(item);
       })
       .catch(err => console.log(err));
@@ -70,16 +70,47 @@ module.exports.tornamentUserControl = async(req, res) => {
   Tournaments.updateOne({publicID}, {users: tmp}).then(() => res.sendStatus(200)).catch(err => res.status(401).send(err));
 }
 
-module.exports.tornamentAddScore = (req, res) => {
+module.exports.tornamentAddScore = async(req, res) => {
   const { _id, publicID } = req.query;
-  console.log(_id)
+  const { score, comment } = req.body;
+  let users;
   if (req.user.role === 'Juri') {
-    Tournaments.find({ publicID })
+    await Tournaments.find({ publicID })
     .then(responce => {
-      if(response.users) return response.users.findIndex(e => e._id === id)
-    })
-    .then(result => console.log(result))
+      let tmp = Object.assign({}, responce)['0'];
+      users = tmp.users;
+    });
   } else {
     res.sendStatus(403);
   }
+
+  let index = users.findIndex(e => e._id == _id);
+  if (index > -1) {
+    let {username, image} = req.user;
+    user = Object.assign({},users[index]._doc);
+    user.marks.push({name: username, image, score, comment});
+    delete user._id;
+
+    await Tournaments.updateOne({publicID ,'users._id': _id}, {$set: {'users.$': user}})
+    .then(() => res.sendStatus(200))
+    .catch(err => console.log(err));
+  } else {
+    res.sendStatus(404);
+  }
+
+ 
+
+  await Tournaments.findOne({publicID})
+  .then(result => {
+    let index = users.findIndex(e => e._id == _id);
+    if (index > -1) {
+      let marks = result.users[index].marks;
+      console.log('totel ' + marks.reduce((acc, e) => acc += e.score));
+      let score = (marks.reduce((acc, e) => acc += e.score)) /result.users[index].marks.length;
+
+      Tournaments.updateOne({publicID, 'users._id': _id}, {$set: {'users.$.score': score}})
+      .then(result => console.log(result))
+      .catch(err => console.log(err));
+    }
+  });
 }

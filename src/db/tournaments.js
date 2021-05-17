@@ -3,15 +3,22 @@ const { Schema } = mongoose;
 
 const tournamentSchema = new Schema(
   {
-    publicID: {type: String, required: true, unique: true},
+    publicID: {type: String, required: true},
     users: [
       {
-        userId: {type:String, unique: true},
+        userId: {type: String, unique: false},
         score: {type: String, default:"-"},
-        
         gitURL: String,
         difficulty: String,
         jobStatus: String,
+        marks: [
+          {
+            name: String,
+            image: String,
+            score: String,
+            comment: String,
+          }
+        ],
       }
     ],
     place: String,
