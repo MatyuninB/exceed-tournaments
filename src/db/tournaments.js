@@ -10,7 +10,7 @@ const tournamentSchema = new Schema(
         score: {type: String, default:"-"},
         gitURL: String,
         difficulty: String,
-        jobStatus: String,
+        jobStatus: {type: String, default: false},
         marks: [
           {
             name: String,

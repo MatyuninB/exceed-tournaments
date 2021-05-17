@@ -5,7 +5,7 @@ const Users = require('../../db/users');
 module.exports.getAllTournaments = (req, res) => {
   Tournaments
   .find()
-  .then(result => res.send(result.map(e => {return {title: e.description.title, publicID : e.publicID}})))
+  .then(result => res.send(result.map(e => {return {title: e.description.title, publicID : e.publicID, users: e.users}})))
   .catch(err => {
     res.send('database not avalible ' + err);
     console.log(err);
@@ -30,9 +30,9 @@ module.exports.getOneTournament = async(req, res) => {
       let tmp = {};
       await Users.find({ _id: item.userId})
       .then(result => {
-        const {username, image, office} = result[0];
+        const {username, image, fullname, office} = result[0];
         const {score, difficulty, jobStatus, gitURL, _id, marks} = item;
-        item = {username, image, office, score, difficulty, jobStatus, gitURL, _id, marks};
+        item = {username, fullname, image, office, score, difficulty, jobStatus, gitURL, _id, marks};
         userInfo.push(item);
       })
       .catch(err => console.log(err));
@@ -115,4 +115,18 @@ module.exports.tornamentAddScore = async(req, res) => {
       .catch(err => console.log(err));
     }
   });
+}
+
+module.exports.changeJobStatus = async(req, res) => {
+  const {publicID, username} = req.body;
+  if(req.user.username === username) {
+    const {gitURL, status} = req.body;
+    const id = req.user._id.toString();
+
+    Tournaments.updateOne({publicID, 'users.userId': id}, {$set: {'users.$.jobStatus': status, 'users.$.gitURL': gitURL}})
+    .then(responce => res.send(responce))
+    .catch(err => console.log(err));
+  } else {
+    res.sendStatus(403);
+  }
 }
