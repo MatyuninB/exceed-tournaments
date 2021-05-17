@@ -118,15 +118,11 @@ module.exports.tornamentAddScore = async(req, res) => {
 }
 
 module.exports.changeJobStatus = async(req, res) => {
-  const {publicID, username} = req.body;
-  if(req.user.username === username) {
-    const {gitURL, status} = req.body;
-    const id = req.user._id.toString();
+  const {publicID} = req.body;
+  const {gitURL, status} = req.body;
+  const id = req.user._id.toString();
 
-    Tournaments.updateOne({publicID, 'users.userId': id}, {$set: {'users.$.jobStatus': status, 'users.$.gitURL': gitURL}})
-    .then(responce => res.send(responce))
-    .catch(err => console.log(err));
-  } else {
-    res.sendStatus(403);
-  }
+  Tournaments.updateOne({publicID, 'users.userId': id}, {$set: {'users.$.jobStatus': status, 'users.$.gitURL': gitURL}})
+  .then(responce => res.send(responce))
+  .catch(err => console.log(err));
 }
