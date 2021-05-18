@@ -93,7 +93,7 @@ module.exports.tornamentAddScore = async(req, res) => {
 
     await Tournaments.updateOne({publicID ,'users.userId': id}, {$set: {'users.$': user}})
     .then(() => res.sendStatus(200))
-    .catch(err => console.log(err));
+    .catch(err => res.send('v jopy'));
   } else {
     res.sendStatus(404);
   }
@@ -112,7 +112,7 @@ module.exports.tornamentAddScore = async(req, res) => {
 
       Tournaments.updateOne({publicID, 'users.userId': id}, {$set: {'users.$.score': score.toString()}})
       .then(result => sendStatus(200))
-      .catch(err => console.log(err));
+      .catch(err => res.send('v jopy'));
     }
   });
 }

@@ -1,6 +1,7 @@
 const Users = require('../../db/users');
 const bcrypt = require('bcrypt');
 const generateToken = require('../auth/generateToken');
+const cloudinary = require('cloudinary');
 const dotenv = require('dotenv').config();
 const saltRounds = 10;
 
@@ -88,11 +89,15 @@ module.exports.userInfo = (req, res) => {
 }
 
 module.exports.imageHandler = async(req, res) => {
-  const { _id } = req.user
+  
   const path = Object.values(req.files)[0].path;
-  cloudinary.v2.uploader.upload(path, { public_id: `exceed${_id}` })
-  .then(result => Users.updateOne( {_id}, { image: result.url })
+  const username = Object.values(req.files)[0].fieldName;
+  cloudinary.v2.uploader.upload(path, { public_id: `exceed${username}` })
+  .then(result => {
+    console.log(result.url, username, path);
+    Users.updateOne( {username}, { image: result.url })
+  })
   .then(() => res.sendStatus(200))
-  .catch(err => res.status(404).send(err)))
+  .catch(err => res.status(404).send(err))
   .catch(err => res.status(404).send(err));
 }
