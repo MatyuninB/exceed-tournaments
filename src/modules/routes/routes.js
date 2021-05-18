@@ -1,4 +1,5 @@
 const express = require('express');
+const tournaments = require('../../db/tournaments');
 const router = express.Router();
 const isAuth = require('../auth/isAuth');
 const {
@@ -39,7 +40,8 @@ router.get('/tockenCheck', isAuth, (req, res) => res.send({
   username: req.user.username, 
   image: req.user.image, 
   role: req.user.role, 
-  office: req.user.office
+  office: req.user.office,
+  tournaments: req.user.tournaments
 }));
 router.get('/userInfo', isAuth, userInfo);
 router.post('/userPicture', imageHandler);
