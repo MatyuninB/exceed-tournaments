@@ -1,4 +1,5 @@
 const Users = require('../../db/users');
+const Tournaments = require('../../db/tournaments');
 const bcrypt = require('bcrypt');
 const generateToken = require('../auth/generateToken');
 const cloudinary = require('cloudinary');
@@ -89,15 +90,27 @@ module.exports.userInfo = (req, res) => {
 }
 
 module.exports.imageHandler = async(req, res) => {
-  
   const path = Object.values(req.files)[0].path;
   const username = Object.values(req.files)[0].fieldName;
-  cloudinary.v2.uploader.upload(path, { public_id: `exceed${username}` })
+  console.log(path, username)
+  cloudinary.v2.uploader.upload(path, { public_id: `exceed/exceed${username}` })
   .then(result => {
-    console.log(result.url, username, path);
-    Users.updateOne( {username}, { image: result.url })
+    Users.updateOne({username}, {'image' : result.url})
+    .catch(err => console.log(err))
   })
   .then(() => res.sendStatus(200))
   .catch(err => res.status(404).send(err))
   .catch(err => res.status(404).send(err));
+}
+
+module.exports.tornamentAssign = async(req, res) => {
+  const userId = req.user._id;
+  const tournament = await Tournaments.findOne({publicID: req.body.publicID})
+  let index = torament.users.findIndex(e => e.userId === userId);
+  if (index === -1) {
+    Tournaments.updateOne({publicID: req.body.publicID}, {'$push': {users: {userId}}})
+  .then(res.sendStatus(200)).catch(err => res.send(401));
+  } else {
+    res.send('user alredy exist').status(500);
+  } 
 }

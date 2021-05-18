@@ -97,7 +97,6 @@ module.exports.tornamentAddScore = async(req, res) => {
   } else {
     res.sendStatus(404);
   }
-
  
 
   await Tournaments.findOne({publicID})
@@ -116,6 +115,43 @@ module.exports.tornamentAddScore = async(req, res) => {
     }
   });
 }
+
+module.exports.changeScore = async(req, res) => {
+  const {id, publicID} = req.query;
+  console.log()
+  const tournament = await Tournaments.findOne({publicID});
+  console.log(tournament)
+  const index = tournament.users.findIndex(e => e.userId === id);
+
+  if (index === -1) {
+    res.sendStatus(404);
+  } else {
+    let indx = tournament.users[index].marks.findIndex(e => e.name === req.user.username);
+    if (indx !== -1) {
+      tournament.users[index].marks[indx] = Object.assign({name: req.user.username, image:req.user.image} ,req.body);
+      await Tournaments.updateOne({publicID}, {users: tournament.users})
+      .then(() => res.send(200))
+      .catch(err => res.sendStatus(500));
+    } else {
+      res.sendStatus(404);
+    }
+  }
+
+  await Tournaments.findOne({publicID})
+  .then(result => {
+    if (index > -1) {
+      let marks = result.users[index].marks;
+      let total = 0;
+      marks.forEach((e) => total += parseInt(e.score));
+      console.log(total);
+      let score = (total/marks.length).toFixed(2);
+
+      Tournaments.updateOne({publicID, 'users.userId': id}, {$set: {'users.$.score': score.toString()}})
+      .catch(err => res.send('v jopy'));
+    }
+  });
+}
+
 
 module.exports.changeJobStatus = async(req, res) => {
   const {publicID} = req.body;
