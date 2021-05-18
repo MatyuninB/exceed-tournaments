@@ -129,8 +129,8 @@ module.exports.tornamentAssign = async(req, res) => {
     .then((result) => res.sendStatus(200)).catch(err => res.send(401));
 
 
-  Users.updateOne({_id: id}, {$push: {tournaments: {publicID}}})
-  .catch((err) => console.log(err));
+    Users.updateOne({_id: id}, {$push: {tournaments: {publicID}}})
+    .catch((err) => console.log(err));
   } else {
     res.send('user alredy exist').status(500);
   } 
