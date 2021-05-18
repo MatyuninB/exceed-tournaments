@@ -9,6 +9,9 @@ const dotenv = require('dotenv').config();
 const cloudinary = require('cloudinary');
 app.use(cors());
 app.options('*', cors())
+app.options('/contact', (req, res) => {
+  res.sendStatus(204);
+});
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME, 
   api_key: process.env.API_KEY, 
