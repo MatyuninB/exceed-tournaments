@@ -7,7 +7,11 @@ const formData = require("express-form-data");
 const routes = require('./src/modules/routes/routes');
 const dotenv = require('dotenv').config();
 const cloudinary = require('cloudinary');
-app.use(cors({methods: ['GET', 'POST', 'OPTIONS']}));
+app.use(cors({
+  methods: ['GET', 'POST', 'OPTIONS'],
+  origin: true,
+  credentials: true
+}));
 app.options('*', cors())
 app.options('/contact', (req, res) => {
   res.sendStatus(204);
