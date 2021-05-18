@@ -33,7 +33,13 @@ router.post('/changeScore', isAuth, changeScore);
 router.post('/create_user', newUser);
 router.post('/userLogin', userLogin);
 router.post('/userUpdate', isAuth, userUpdate);
-router.get('/tockenCheck', isAuth, (req, res) => res.send({ _id: req.user._id, username: req.user.username, image: req.user.image, role: req.user.role}));
+router.get('/tockenCheck', isAuth, (req, res) => res.send({ 
+  _id: req.user._id, 
+  username: req.user.username, 
+  image: req.user.image, 
+  role: req.user.role, 
+  office: req.user.office
+}));
 router.get('/userInfo', isAuth, userInfo);
 router.post('/userPicture', imageHandler);
 router.post('/editImage', isAuth, editImage);
