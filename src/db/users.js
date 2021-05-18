@@ -6,6 +6,7 @@ const userSchema = new Schema(
   {
     username: {type: String, required: true, unique: true},
     fullname: String,
+    admin: {type: Boolean, default: false},
     password: { type: String, required: true },
     tournaments: [{
       publicID: String,

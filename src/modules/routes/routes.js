@@ -36,6 +36,7 @@ router.post('/userLogin', userLogin);
 router.post('/userUpdate', isAuth, userUpdate);
 router.get('/tockenCheck', isAuth, (req, res) => res.send({ 
   _id: req.user._id,
+  admin: req.user.admin,
   fullname: req.user.fullname,
   username: req.user.username, 
   image: req.user.image, 
