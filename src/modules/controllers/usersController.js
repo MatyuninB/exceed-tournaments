@@ -108,7 +108,9 @@ module.exports.editImage = async(req, res) => {
   console.log('work', path)
 
   const username = req.user.username;
-  res.set('Access-Control-Allow-Origin','*');
+  res.append('Access-Control-Allow-Origin', ['*']);
+  res.append('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+  res.append('Access-Control-Allow-Headers', 'Content-Type');
   cloudinary.v2.uploader.upload(path, { public_id: `exceed/exceed${username}` })
   .then(result => {
     Users.updateOne({username}, {'image' : result.url})
