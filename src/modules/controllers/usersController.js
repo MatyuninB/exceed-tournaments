@@ -121,12 +121,16 @@ module.exports.tornamentAssign = async(req, res) => {
   const userId = req.user._id;
   const tournament = await Tournaments.findOne({publicID: req.query.publicID});
   let index = tournament.users.findIndex(e => e.userId == userId);
-  
+  console.log(index)
   if (index === -1) {
     tournament.users.push({users: {userId}})
     
     Tournaments.updateOne({publicID: req.query.publicID}, {'$push': {users: {userId}}})
     .then((result) => res.sendStatus(200)).catch(err => res.send(401));
+
+
+    Users.updateOne({_id: userId}, {$push: {tournaments: {publicID: req.query.publicID}}})
+    .catch((err) => console.log(err));
   } else {
     res.send('user alredy exist').status(500);
   } 
