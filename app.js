@@ -19,7 +19,7 @@ const dbURL = process.env.DB_URL;
 mongoose.connect(dbURL, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex:true});
 
 app.use(bodyParser.json({limit: '50mb'}));
-app.use(cors());
+app.use(cors({allowedHeaders: ['Content-Type', 'Aurh', 'Origin', ]}));
 app.use(formData.parse());
 app.use('/', routes);
 
