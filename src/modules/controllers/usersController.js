@@ -13,14 +13,17 @@ module.exports.newUser = async(req, res) => {
     image, 
     office,
     fullname,
+    role
   } = req.body;
   const user = {
     username,  
     tornaments, 
     image, 
-    office
+    office,
+    fullname,
+    role
   }
-
+  console.log(req.body);
   if (/(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,}/.test(password)) {
     console.log(saltRounds)
     bcrypt.hash(password, saltRounds, (err, hash) => {
@@ -76,9 +79,13 @@ module.exports.userUpdate = (req, res) => {
 }
 
 module.exports.userInfo = (req, res) => {
-  const user = Object.assign({}, req.user);
-  delete user._doc.password;
-  res.send(user._doc);
+  Users.findOne({ username : req.user.username })
+  .then((responce) => {
+    let tmp = Object.assign({}, responce)._doc;
+    delete tmp.password;
+    res.send(tmp);
+  })
+  .catch((err) => res.status(404).send(err));
 }
 
 module.exports.imageHandler = async(req, res) => {
