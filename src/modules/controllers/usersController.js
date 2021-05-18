@@ -23,9 +23,8 @@ module.exports.newUser = async(req, res) => {
     fullname,
     role
   }
-  console.log(req.body);
+
   if (/(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,}/.test(password)) {
-    console.log(saltRounds)
     bcrypt.hash(password, saltRounds, (err, hash) => {
       if(err) {
         console.log(err);
@@ -43,7 +42,7 @@ module.exports.newUser = async(req, res) => {
       }
     });
   } else {
-    res.status(400).send('ERR: password break the rules');
+    res.status(500).send('ERR: password must contain 6 char including upper and lower case letters and numbers');
   }
 }
 
