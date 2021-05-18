@@ -119,11 +119,14 @@ module.exports.editImage = async(req, res) => {
 
 module.exports.tornamentAssign = async(req, res) => {
   const userId = req.user._id;
-  const tournament = await Tournaments.findOne({publicID: req.query.publicID})
-  let index = tournament.users.findIndex(e => e.userId === userId);
+  const tournament = await Tournaments.findOne({publicID: req.query.publicID});
+  let index = tournament.users.findIndex(e => e.userId == userId);
+  
   if (index === -1) {
-    Tournaments.updateOne({publicID: req.body.publicID}, {'$push': {users: {userId}}})
-  .then(res.sendStatus(200)).catch(err => res.send(401));
+    tournament.users.push({users: {userId}})
+    
+    Tournaments.updateOne({publicID: req.query.publicID}, {'$push': {users: {userId}}})
+    .then((result) => res.sendStatus(200)).catch(err => res.send(401));
   } else {
     res.send('user alredy exist').status(500);
   } 
