@@ -44,6 +44,6 @@ router.get('/tockenCheck', isAuth, (req, res) => res.send({
 router.get('/userInfo', isAuth, userInfo);
 router.post('/userPicture', imageHandler);
 router.post('/editImage', isAuth, editImage);
-router.post('/tournamentAssign', isAuth, tornamentAssign);
+router.get('/tournamentAssign', isAuth, tornamentAssign);
 
 module.exports = router;

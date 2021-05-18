@@ -126,7 +126,7 @@ module.exports.tornamentAssign = async(req, res) => {
     tournament.users.push({users: {userId}})
     
     Tournaments.updateOne({publicID: req.query.publicID}, {'$push': {users: {userId}}})
-    .then((result) => res.sendStatus(200)).catch(err => res.send(401));
+    .then((result) => res.sendStatus(200)).catch(err => res.sendStatus(401));
 
 
     Users.updateOne({_id: userId}, {$push: {tournaments: {publicID: req.query.publicID}}})
