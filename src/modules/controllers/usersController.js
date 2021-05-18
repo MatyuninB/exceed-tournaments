@@ -103,10 +103,24 @@ module.exports.imageHandler = async(req, res) => {
   .catch(err => res.status(404).send(err));
 }
 
+module.exports.editImage = async(req, res) => {
+  const path = Object.values(req.files)[0].path;
+  const username = req.user.username;
+  console.log(path, username)
+  cloudinary.v2.uploader.upload(path, { public_id: `exceed/exceed${username}` })
+  .then(result => {
+    Users.updateOne({username}, {'image' : result.url})
+    .catch(err => console.log(err))
+  })
+  .then(() => res.sendStatus(200))
+  .catch(err => res.status(404).send(err))
+  .catch(err => res.status(404).send(err));
+}
+
 module.exports.tornamentAssign = async(req, res) => {
   const userId = req.user._id;
-  const tournament = await Tournaments.findOne({publicID: req.body.publicID})
-  let index = torament.users.findIndex(e => e.userId === userId);
+  const tournament = await Tournaments.findOne({publicID: req.query.publicID})
+  let index = tournament.users.findIndex(e => e.userId === userId);
   if (index === -1) {
     Tournaments.updateOne({publicID: req.body.publicID}, {'$push': {users: {userId}}})
   .then(res.sendStatus(200)).catch(err => res.send(401));

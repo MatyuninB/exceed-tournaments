@@ -130,7 +130,7 @@ module.exports.changeScore = async(req, res) => {
     if (indx !== -1) {
       tournament.users[index].marks[indx] = Object.assign({name: req.user.username, image:req.user.image} ,req.body);
       await Tournaments.updateOne({publicID}, {users: tournament.users})
-      .then(() => res.send(200))
+      .then(() => res.sendStatus(200))
       .catch(err => res.sendStatus(500));
     } else {
       res.sendStatus(404);
