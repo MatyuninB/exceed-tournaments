@@ -8,6 +8,7 @@ const routes = require('./src/modules/routes/routes');
 const dotenv = require('dotenv').config();
 const cloudinary = require('cloudinary');
 app.use(cors());
+app.options('*', cors())
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME, 
   api_key: process.env.API_KEY, 
