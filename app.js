@@ -7,7 +7,15 @@ const formData = require("express-form-data");
 const routes = require('./src/modules/routes/routes');
 const dotenv = require('dotenv').config();
 const cloudinary = require('cloudinary');
-
+app.use(cors({
+  methods: ['GET', 'POST', 'OPTIONS'],
+  origin: true,
+  credentials: true
+}));
+app.options('*', cors())
+app.options('/contact', (req, res) => {
+  res.sendStatus(204);
+});
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME, 
   api_key: process.env.API_KEY, 
@@ -18,8 +26,8 @@ cloudinary.config({
 const dbURL = process.env.DB_URL;
 mongoose.connect(dbURL, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex:true});
 
-app.use(bodyParser.json({limit: '50mb'}));
-app.use(cors());
+app.use(bodyParser.json({limit: '100mb'}));
+
 app.use(formData.parse());
 app.use('/', routes);
 

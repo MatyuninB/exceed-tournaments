@@ -3,6 +3,7 @@ const Users = require('../../db/users');
 
 const isAuth = (req, res, next) => {
   const token = req.headers.auth;
+  
   jwt.verify(token, process.env.TOKEN_SIGN, (err, decoded) => {
     if (decoded) {
       Users.findOne({_id: decoded.data._id})
