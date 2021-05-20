@@ -9,7 +9,8 @@ const {
   tornamentUserControl,
   tornamentAddScore,
   changeJobStatus,
-  changeScore
+  changeScore,
+  TournamentStatus
 } = require('../controllers/tournamentsController');
 
 const {
@@ -30,6 +31,7 @@ router.post('/tornamentUserContol', tornamentUserControl);
 router.post('/tornamentAddScore', isAuth, tornamentAddScore);
 router.post('/changeJobStatus', isAuth, changeJobStatus);
 router.post('/changeScore', isAuth, changeScore);
+router.get('/tourStatus', isAuth, TournamentStatus);
 
 router.post('/create_user', newUser);
 router.post('/userLogin', userLogin);

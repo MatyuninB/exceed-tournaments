@@ -162,3 +162,18 @@ module.exports.changeJobStatus = async(req, res) => {
   .then(responce => res.send(responce))
   .catch(err => console.log(err));
 }
+
+module.exports.TournamentStatus = (req, res) => {
+  if(req.user.admin) {
+    const { publicID } = req.query;
+    Tournaments.findOne({publicID}, (err, tournament) => {
+      if(err) res.sendStatus(404);
+      tournament.status = !tournament.status;
+      tournament.save();
+      }
+    );
+    res.sendStatus(200);
+  } else {
+    res.sendStatus(403);
+  }
+}
