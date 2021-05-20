@@ -5,7 +5,7 @@ const Users = require('../../db/users');
 module.exports.getAllTournaments = (req, res) => {
   Tournaments
   .find()
-  .then(result => res.send(result.map(e => {return {title: e.description.title, publicID : e.publicID, users: e.users}})))
+  .then(result => res.send(result.map(e => {return {status: e.status, title: e.description.title, publicID : e.publicID, users: e.users}})))
   .catch(err => {
     res.send('database not avalible ' + err);
     console.log(err);
